@@ -8,15 +8,15 @@
     <script src="colorbrewer.js"></script>
     <link rel="stylesheet" href="http://cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css"/>
     <style>
-        .axis {
-            font: 10px sans-serif;
-        }
-
         .axis path,
         .axis line {
             fill: none;
             stroke: #000;
             shape-rendering: crispEdges;
+        }
+
+        .y.axis path {
+            display: none;
         }
 
         .x.axis path {
@@ -36,7 +36,7 @@
     function draw(container) {
         container.empty();
 
-        var margin = {top: 20, right: 40, bottom: 30, left: 30},
+        var margin = {top: 20, right: 40, bottom: 30, left: 100},
                 width = container.width() - margin.left - margin.right,
                 height = 500 - margin.top - margin.bottom;
 
@@ -63,14 +63,27 @@
 
         var data = {
             notes: [
-                [1, "agile", 10, 2.5],
-                [2, "agile", 8, 3.7],
-                [2, "front", 6, 5]
+                ["9h00 - 9h50", "Salle 1", "Un super slot agile", "Un Agiliste", 10, 2.5],
+                ["10h00 - 10h50", "Salle 1", "Un super slot agile", "Un Agiliste", 8, 3.7],
+                ["11h00 - 11h50", "Salle 1", "Un super slot agile", "Un Agiliste", 40, 4.7],
+                ["13h00 - 13h50", "Salle 1", "Un super slot agile", "Un Agiliste", 15, 1.2],
+                ["9h00 - 9h50", "Salle 2", "Un super slot front", "Un Frontiste", 10, 2.5],
+                ["10h00 - 10h50", "Salle 2", "Un super slot front", "Un Frontiste", 8, 3.7],
+                ["11h00 - 11h50", "Salle 2", "Un super slot front", "Un Frontiste", 40, 4.7],
+                ["13h00 - 13h50", "Salle 2", "Un super slot front", "Un Frontiste", 15, 1.2],
+                ["9h00 - 9h50", "Salle 3", "Un super slot data", "Un Dataiste", 10, 2.5],
+                ["10h00 - 10h50", "Salle 3", "Un super slot data", "Un Dataiste", 8, 3.7],
+                ["11h00 - 11h50", "Salle 3", "Un super slot data", "Un Dataiste", 40, 4.7],
+                ["13h00 - 13h50", "Salle 3", "Un super slot data", "Un Dataiste", 15, 1.2]
             ]
         };
 
-        x.domain([1, 2, 3, 4, 5, 6]);
-        y.domain(["data", "agile", "front"]);
+        x.domain(data.notes.map(function (d) {
+            return d[0];
+        }));
+        y.domain(data.notes.map(function (d) {
+            return d[1];
+        }));
 
         svg.append("g")
                 .attr("class", "x axis")
@@ -84,12 +97,14 @@
 //        var colors = [[1, "#d7191c"], [2, "#fdae61"], [3, "#ffffbf"], [4, "#a6d96a"], [5, "#1a9641"]];
 
         var color = d3.scale.ordinal()
-            .domain([1, 2, 3, 4, 5])
-            .range(colorbrewer.RdYlGn[5]);
+                .domain([1, 2, 3, 4, 5])
+                .range(colorbrewer.RdYlGn[5]);
 
-        svg.selectAll(".circle")
+        var circle = svg.selectAll(".circle")
                 .data(data.notes)
-                .enter().append("circle")
+                .enter()
+
+        circle.append("circle")
                 .attr("class", "circle")
                 .attr("cx", function (d) {
                     return x.rangeBand() / 2 + x(d[0]);
@@ -99,11 +114,15 @@
                     return y.rangeBand() / 2 + y(d[1]);
                 })
                 .attr("r", function (d) {
-                   return d[2];
+                    return d[4];
                 })
                 .attr("fill", function (d) {
-                    return color(d[3])
-                });
+                    return color(d[5])
+                })
+                .attr("stroke", function (d) {
+                    return color(d[5])
+                })
+                .attr("fill-opacity", 0.7);
 
 
     }
