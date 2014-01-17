@@ -29,24 +29,39 @@
             display: none;
         }
 
+        .graphTitle {
+            text-align: center;
+        }
+
+        .title {
+            text-align: center;
+        }
+
 
     </style>
 </head>
 
 <body>
-<div id="graph_all" class="row">
+<div id="graph_futur" class="row">
+    <div class="row title">
+        <div class="large-12 column"><h2>Futur&lt;Devoxx&gt;</h2></div>
+    </div>
+
 </div>
 
 <script>
-
 
 
     function newNoteHistogramme(data) {
         // Create new responsive graph and append them to row
         var ng = $('<div/>')
                 .addClass("large-3 columns")
-        $("#graph_all").append(ng)
-        return barchart.init(ng,data)
+        var graph = $('<div/>')
+        var title = $('<div/>').addClass("graphTitle").text(data.slot)
+        ng.append(graph)
+        ng.append(title)
+        $("#graph_futur").append(ng)
+        return barchart.init(graph, data)
     }
 
     var b1 = newNoteHistogramme({

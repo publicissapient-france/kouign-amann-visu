@@ -7,9 +7,9 @@ var barchart = {
             draw: function () {
                 this.container.empty();
 
-                var margin = {top: 20, right: 40, bottom: 30, left: 30},
+                var margin = {top: 10, right: 30, bottom: 10, left: 30},
                     width = this.container.width() - margin.left - margin.right,
-                    height = 300 - margin.top - margin.bottom;
+                    height = 150 - margin.top - margin.bottom;
 
                 var x = d3.scale.ordinal()
                     .rangeRoundBands([0, width], .1);
@@ -72,9 +72,9 @@ var barchart = {
                     .attr("fill", function (d) {
                         return color(d[0])
                     })
-                    .attr("fill-opacity", 0.8)
+                    //.attr("fill-opacity", 0.8)
                     .attr("stroke", function (d) {
-                        return color(d[0])
+                        return "black"
                     });
 
             }
