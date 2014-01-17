@@ -5,15 +5,9 @@
 
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="colorbrewer.js"></script>
     <link rel="stylesheet" href="http://cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css"/>
     <style>
-        .bar {
-            fill: steelblue;
-        }
-
-        .bar:hover {
-            fill: brown;
-        }
 
         .axis {
             font: 10px sans-serif;
@@ -26,18 +20,28 @@
             shape-rendering: crispEdges;
         }
 
-        .x.axis path {
+        .x.axis  {
             display: none;
         }
+
+        .y.axis path {
+            display: none;
+        }
+
 
     </style>
 </head>
 
 <body>
 <div class="row">
-    <div id="barchartOne" class="large-2 columns"></div>
+    <div class="large-3 columns">
+        <div id="barchartOne">
+
+        </div>
+        <div></div>
+    </div>
     <div id="barchartTwo" class="large-3 columns"></div>
-    <div id="barchartThree" class="large-4 columns"></div>
+    <div id="barchartThree" class="large-3 columns"></div>
     <div id="barchartFour" class="large-3 columns"></div>
 </div>
 
@@ -48,7 +52,7 @@
 
         var margin = {top: 20, right: 40, bottom: 30, left: 30},
                 width = container.width() - margin.left - margin.right,
-                height = 500 - margin.top - margin.bottom;
+                height = 300 - margin.top - margin.bottom;
 
         var x = d3.scale.ordinal()
                 .rangeRoundBands([0, width], .1);
@@ -62,7 +66,13 @@
 
         var yAxis = d3.svg.axis()
                 .scale(y)
-                .orient("left");
+                .orient("left")
+                .tickValues([0,0.25,0.5,1])
+                .tickFormat(d3.format("%"));
+
+        var color = d3.scale.ordinal()
+                .domain([1, 2, 3, 4, 5])
+                .range(colorbrewer.RdYlGn[5]);
 
         // An SVG element with a bottom-right origin.
         var svg = d3.select(container.get(0)).append("svg")
@@ -72,7 +82,7 @@
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         var data = {
-            slot: "Xebia",
+            slot: "Micro architecture avec Vert.x",
             votes: [
                 [1, 1],
                 [2, 4],
@@ -82,9 +92,10 @@
             ]
         };
 
+        var nbVote = d3.sum(data.votes, function(d){return d[1]})
         x.domain([1, 2, 3, 4, 5]);
         y.domain([0, d3.max(data.votes, function (d) {
-            return d[1];
+            return d[1]/nbVote;
         })]);
 
         svg.append("g")
@@ -105,25 +116,30 @@
                 })
                 .attr("width", x.rangeBand())
                 .attr("y", function (d) {
-                    return y(d[1]);
+                    return y(d[1]/nbVote);
                 })
                 .attr("height", function (d) {
-                    return height - y(d[1]);
+                    return height - y(d[1]/nbVote);
+                })
+                .attr("fill", function(d){
+                    return color(d[0])
+                })
+                .attr("fill-opacity", 0.8)
+                .attr("stroke", function(d){
+                    return color(d[0])
                 });
 
     }
 
-    draw($("#barchartOne"));
-    draw($("#barchartTwo"));
-    draw($("#barchartThree"));
-    draw($("#barchartFour"));
-
-    $(window).on("resize", function () {
+    function redraw(){
         draw($("#barchartOne"));
         draw($("#barchartTwo"));
         draw($("#barchartThree"));
         draw($("#barchartFour"));
-    })
+    }
+
+    $(window).on("resize", redraw)
+    redraw()
 </script>
 </body>
 </html>
