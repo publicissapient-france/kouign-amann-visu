@@ -32,6 +32,11 @@
             text-align: center;
         }
 
+        .graphSpeaker {
+            text-align: center;
+            font-weight: bold;
+        }
+
         .title {
             text-align: center;
         }
@@ -39,100 +44,67 @@
 </head>
 
 <body>
-<div id="graph_futur" class="row">
-    <div class="row title">
-        <div class="large-12 column"><h2>Futur&lt;Devoxx&gt;</h2></div>
-    </div>
-</div>
-<div id="graph_xke" class="row">
-    <div class="row title">
-        <div class="large-12 column"><h2>Futur&lt;XKE&gt;</h2></div>
+<div id="notes" class="row">
+    <div class="row">
+        <div id="title" class="large-12 column"></div>
     </div>
 </div>
 
 <script>
+    //var baseUrl = "http://kouign-amann-cloud.devoxxfr-kouign-amann.cloudbees.net/"
+    var baseUrl = "http://localhost:8080/"
+    var currentGraph = []
 
     function newNoteHistogramme(container, data) {
         // Create new responsive graph and append them to row
         var ng = $('<div/>').addClass('large-3 columns');
         var graph = $('<div/>');
         var title = $('<div/>').addClass('graphTitle').text(data.slot);
+        var speaker = $('<div/>').addClass('graphSpeaker').text(data.speaker);
         ng.append(graph);
         ng.append(title);
+        ng.append(speaker);
         $('#' + container).append(ng);
-        return barchart.init(graph, data);
+        return barchart.init(graph, data.notes);
     }
 
-    var b1 = newNoteHistogramme('graph_futur', {
-        slot: 'Xebay',
-        votes: [
-            [1, 1],
-            [2, 4],
-            [3, 2],
-            [4, 10],
-            [5, 20]
-        ]
-    });
-    var b2 = newNoteHistogramme('graph_futur', {
-        slot: 'No SQL que choisir ?',
-        votes: [
-            [1, 4],
-            [2, 2],
-            [3, 15],
-            [4, 20],
-            [5, 12]
-        ]
-    });
-    var b3 = newNoteHistogramme('graph_futur', {
-        slot: 'Building a Lambda architecture',
-        votes: [
-            [1, 1],
-            [2, 4],
-            [3, 2],
-            [4, 10],
-            [5, 20]
-        ]
-    });
-    var b4 = newNoteHistogramme('graph_futur', {
-        slot: 'Micro architecture avec Vert.x',
-        votes: [
-            [1, 1],
-            [2, 4],
-            [3, 2],
-            [4, 10],
-            [5, 20]
-        ]
-    });
-
     var average;
-    $.get('http://kouign-amann-cloud.devoxxfr-kouign-amann.cloudbees.net/aggregate/note', function (rawData) {
-        // rawData format
-        // { result: { 1: 5, 2: 8, 3: 20, 4: 35, 5: 12 } }
-        var averageData = [];
-
-        _.forIn(rawData.result, function (value, key) {
-            averageData.push([key, value]);
+    var query = getQueryParams(document.location.search);
+    var trackId = query.track
+    $.get(baseUrl + 'track/' + trackId, function (rawData) {
+        // Update title
+        var title = $('<h1 class="title">'+rawData.track+'</h1>')
+        $('#title').append(title)
+        rawData.result.forEach(function (entry) {
+            currentGraph.push(newNoteHistogramme("notes", entry))
         });
-
-        average = newNoteHistogramme('graph_xke', {
-            slot: 'Average',
-            votes: averageData
-        });
-        average.draw();
+        redraw();
     });
 
     function redraw() {
-        b1.draw();
-        b2.draw();
-        b3.draw();
-        b4.draw();
-        if (average) {
-            average.draw();
-        }
+        currentGraph.forEach(function (entry) {
+            entry.draw()
+        })
     }
 
     $(window).on('resize', redraw);
-    redraw();
+
+
+    // util function
+
+    function getQueryParams(qs) {
+        qs = qs.split("+").join(" ");
+
+        var params = {}, tokens,
+                re = /[?&]?([^=]+)=([^&]*)/g;
+
+        while (tokens = re.exec(qs)) {
+            params[decodeURIComponent(tokens[1])]
+                    = decodeURIComponent(tokens[2]);
+        }
+
+        return params;
+    }
 
 </script>
 </body>

@@ -7,9 +7,9 @@ var barchart = {
             draw: function () {
                 this.container.empty();
 
-                var margin = {top: 10, right: 30, bottom: 10, left: 30},
+                var margin = {top: 50, right: 30, bottom: 10, left: 30},
                     width = this.container.width() - margin.left - margin.right,
-                    height = 150 - margin.top - margin.bottom;
+                    height = 200 - margin.top - margin.bottom;
 
                 var x = d3.scale.ordinal()
                     .rangeRoundBands([0, width], .1);
@@ -38,11 +38,11 @@ var barchart = {
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                var nbVote = d3.sum(this.data.votes, function (d) {
+                var nbVote = d3.sum(this.data, function (d) {
                     return d[1]
                 })
                 x.domain([1, 2, 3, 4, 5]);
-                y.domain([0, d3.max(this.data.votes, function (d) {
+                y.domain([0, d3.max(this.data, function (d) {
                     return d[1] / nbVote;
                 })]);
 
@@ -56,7 +56,7 @@ var barchart = {
                     .call(yAxis)
 
                 svg.selectAll(".bar")
-                    .data(this.data.votes)
+                    .data(this.data)
                     .enter().append("rect")
                     .attr("class", "bar")
                     .attr("x", function (d) {
@@ -76,6 +76,10 @@ var barchart = {
                     .attr("stroke", function (d) {
                         return "black"
                     });
+
+                // add test center of graph
+                //svg.append("text")
+                //    .text("test")
 
             }
         }
