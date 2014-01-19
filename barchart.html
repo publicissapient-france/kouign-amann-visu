@@ -40,6 +40,15 @@
         .title {
             text-align: center;
         }
+
+        .mean {
+            text-anchor: middle;
+            font-size: 3em;
+            fill: white;
+            stroke: black;
+            stroke-width: 2px;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -51,15 +60,15 @@
 </div>
 
 <script>
-    //var baseUrl = "http://kouign-amann-cloud.devoxxfr-kouign-amann.cloudbees.net/"
-    var baseUrl = "http://localhost:8080/"
+    var baseUrl = "http://kouign-amann-cloud.devoxxfr-kouign-amann.cloudbees.net/"
+    //var baseUrl = "http://localhost:8080/"
     var currentGraph = []
 
     function newNoteHistogramme(container, data) {
         // Create new responsive graph and append them to row
         var ng = $('<div/>').addClass('large-3 columns');
         var graph = $('<div/>');
-        var title = $('<div/>').addClass('graphTitle').text(data.slot);
+        var title = $('<div/>').addClass('graphTitle').text(data.title);
         var speaker = $('<div/>').addClass('graphSpeaker').text(data.speaker);
         ng.append(graph);
         ng.append(title);
@@ -73,12 +82,17 @@
     var trackId = query.track
     $.get(baseUrl + 'track/' + trackId, function (rawData) {
         // Update title
-        var title = $('<h1 class="title">'+rawData.track+'</h1>')
+        var title = $('<h1 class="title">' + trackId + '</h1>')
         $('#title').append(title)
         rawData.result.forEach(function (entry) {
-            currentGraph.push(newNoteHistogramme("notes", entry))
+            // get note and display data
+            $.get(baseUrl + 'aggregate/note/'+entry.id, function (rawData) {
+                entry.notes = rawData.result
+                currentGraph.push(newNoteHistogramme("notes", entry))
+                redraw();
+            })
         });
-        redraw();
+
     });
 
     function redraw() {

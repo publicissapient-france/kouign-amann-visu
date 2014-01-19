@@ -78,10 +78,22 @@ var barchart = {
                     });
 
                 // add test center of graph
-                //svg.append("text")
-                //    .text("test")
+                svg.append("text")
+                    .text(ponderatedMean(this.data))
+                    .attr("class", "mean")
+                    .attr("transform", "translate(" + width / 2 + "," + height * 0.85 + ")")
 
             }
         }
     }
+}
+
+function ponderatedMean(data) {
+    var num = 0
+    var denom = 0
+    data.forEach(function (d) {
+        num += d[0] * d[1]
+        denom += d[1]
+    })
+    return (num / denom).toPrecision(2)
 }
