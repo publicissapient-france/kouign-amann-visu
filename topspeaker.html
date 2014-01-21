@@ -9,111 +9,68 @@
     <script src="colorbrewer.js"></script>
     <link rel="stylesheet" href="http://cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css"/>
     <style>
-
-        .axis {
-            font: 10px sans-serif;
-        }
-
-        .axis path,
-        .axis line {
-            fill: none;
-            stroke: #000;
-            shape-rendering: crispEdges;
-        }
-
-        .x.axis {
-            display: none;
-        }
-
-        .y.axis path {
-            display: none;
+        .title {
+            text-align: center;
         }
 
         .graphTitle {
             text-align: center;
         }
 
-        .title {
+        .graphSpeaker {
             text-align: center;
+            font-weight: bold;
         }
 
+        .gravatar{
+            display: block;
+            margin: 20px auto 20px auto;
+            border: 10px solid #ddd;
+            border-radius: 200px;
 
+        }
     </style>
 </head>
 
 <body>
-<div id="graph_futur" class="row">
-    <div class="row title">
-        <div class="large-12 column"><h2>Futur&lt;Devoxx&gt;</h2></div>
+<div id="top" class="row">
+    <div class="row">
+        <div id="title" class="large-12 column"><h1 class="title">Best Slot</h1></div>
     </div>
-
 </div>
+<div id="best" class="row"></div>
 
 <script>
+    //var baseUrl = "http://kouign-amann-cloud.devoxxfr-kouign-amann.cloudbees.net/"
+    var baseUrl = "http://localhost:8080/"
+    var currentGraph = []
 
+    $.get(baseUrl + 'top/slot', function (rawData) {
+        // Update title
+        // For each slot
+        // insert gravatar img in a div
+        rawData.result.forEach(function (data) {
+            console.log(data)
+            var ng = $('<div/>').addClass('large-4 columns');
+            var gravatar = $('<img class="gravatar"/>').attr('src', 'http://www.gravatar.com/avatar/'+data.speaker.gravatar+'?s=200px');
+            var title = $('<div/>').addClass('graphTitle').text(data.slot.title);
+            var speaker = $('<div/>').addClass('graphSpeaker').text(data.speaker.speaker);
+            ng.append(gravatar);
+            ng.append(title);
+            ng.append(speaker);
+            $('#best').append(ng);
+        })
 
-    function newNoteHistogramme(data) {
-        // Create new responsive graph and append them to row
-        var ng = $('<div/>')
-                .addClass("large-3 columns")
-        var graph = $('<div/>')
-        var title = $('<div/>').addClass("graphTitle").text(data.slot)
-        ng.append(graph)
-        ng.append(title)
-        $("#graph_futur").append(ng)
-        return barchart.init(graph, data)
-    }
-
-    var b1 = newNoteHistogramme({
-        slot: "Xebay",
-        votes: [
-            [1, 1],
-            [2, 4],
-            [3, 2],
-            [4, 10],
-            [5, 20]
-        ]
-    })
-    var b2 = newNoteHistogramme({
-        slot: "No SQL que choisir ?",
-        votes: [
-            [1, 4],
-            [2, 2],
-            [3, 15],
-            [4, 20],
-            [5, 12]
-        ]
-    })
-    var b3 = newNoteHistogramme({
-        slot: "Building a Lambda architecture",
-        votes: [
-            [1, 1],
-            [2, 4],
-            [3, 2],
-            [4, 10],
-            [5, 20]
-        ]
-    })
-    var b4 = newNoteHistogramme({
-        slot: "Micro architecture avec Vert.x",
-        votes: [
-            [1, 1],
-            [2, 4],
-            [3, 2],
-            [4, 10],
-            [5, 20]
-        ]
-    })
+    });
 
     function redraw() {
-        b1.draw()
-        b2.draw()
-        b3.draw()
-        b4.draw()
+        currentGraph.forEach(function (entry) {
+            entry.draw()
+        })
     }
 
-    $(window).on("resize", redraw)
-    redraw()
+    $(window).on('resize', redraw);
+
 </script>
 </body>
 </html>
