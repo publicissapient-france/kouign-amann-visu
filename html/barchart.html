@@ -5,10 +5,10 @@
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
-    <script src="barchart.js"></script>
-    <script src="colorbrewer.js"></script>
+    <script src="../scripts/barchart.js"></script>
+    <script src="../scripts/colorbrewer.js"></script>
     <link rel="stylesheet" href="http://cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css"/>
-    <script type="text/javascript" src="page-switcher.js"></script>
+    <script type="text/javascript" src="../scripts/page-switcher.js"></script>
 
     <style>
         .axis {
@@ -51,6 +51,15 @@
             stroke-width: 2px;
             font-weight: bold;
         }
+
+        .width50 {
+            width: 50%;
+            display: inline-block;
+        }
+
+        .row {
+            max-width:99em;
+        }
     </style>
 </head>
 
@@ -66,9 +75,16 @@
     //var baseUrl = "http://localhost:8080/"
     var currentGraph = []
 
-    function newNoteHistogramme(container, data) {
+    function newNoteHistogramme(container, data, numResults) {
+
+        var colSize = 3;
+        if (numResults < 4) {
+            colSize = 12 / numResults;
+        }
         // Create new responsive graph and append them to row
         var ng = $('<div/>').addClass('large-3 columns');
+//        var ng = $('<div/>').addClass('large-' + colSize +' columns');
+//        var ng = $('<div/>').addClass('width50');
         var graph = $('<div/>');
         var title = $('<div/>').addClass('graphTitle').text(data.title);
         var speaker = $('<div/>').addClass('graphSpeaker').text(data.speaker);
@@ -83,6 +99,9 @@
     var query = getQueryParams(document.location.search);
     var trackId = query.track
     $.get(baseUrl + 'track/' + trackId, function (rawData) {
+
+        console.log(rawData.result.length)
+
         // Update title
         var title = $('<h1 class="title">' + trackId + '</h1>')
         $('#title').append(title)
@@ -90,7 +109,7 @@
             // get note and display data
             $.get(baseUrl + 'aggregate/note/'+entry.id, function (rawData) {
                 entry.notes = rawData.result
-                currentGraph.push(newNoteHistogramme("notes", entry))
+                currentGraph.push(newNoteHistogramme("notes", entry, rawData.result.length))
                 redraw();
             })
         });

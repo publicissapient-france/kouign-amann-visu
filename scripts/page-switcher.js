@@ -17,9 +17,9 @@ function getCurrentPageIndex() {
 }
 
 if (getCurrentPageIndex() == -1) {
-    window.location = PAGES[0];
+    window.location.href = 'html/' + PAGES[0];
 }
 
 setTimeout(function () {
-    window.location = PAGES[(getCurrentPageIndex() + 1) % PAGES.length];
+//    window.location.href = PAGES[(getCurrentPageIndex() + 1) % PAGES.length];
 }, SWITCH_DELAY);
