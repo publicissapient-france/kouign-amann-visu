@@ -21,5 +21,5 @@ if (getCurrentPageIndex() == -1) {
 }
 
 setTimeout(function () {
-//    window.location.href = PAGES[(getCurrentPageIndex() + 1) % PAGES.length];
+    window.location.href = PAGES[(getCurrentPageIndex() + 1) % PAGES.length];
 }, SWITCH_DELAY);
