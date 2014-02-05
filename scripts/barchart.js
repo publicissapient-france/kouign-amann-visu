@@ -68,7 +68,8 @@ var barchart = {
                         return y(d[1] / nbVote);
                     })
                     .attr("height", function (d) {
-                        return height - y(d[1] / nbVote);
+                        if(nbVote == 0) { return 0} else
+			return height - y(d[1] / nbVote);
                     })
                     .attr("fill", function (d) {
                         return color(d[0])
