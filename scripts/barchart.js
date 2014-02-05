@@ -43,7 +43,7 @@ var barchart = {
                 })
                 x.domain([1, 2, 3, 4, 5]);
                 y.domain([0, d3.max(this.data, function (d) {
-                    return d[1] / nbVote;
+                    if(nbVote==0){return 0} else return d[1] / nbVote;
                 })]);
 
                 svg.append("g")
