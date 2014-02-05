@@ -1,15 +1,15 @@
 var barchart = {
 
-    init: function (container, data) {
+    init: function (data) {
         return {
-            container: container,
+//            container: container,
             data: data,
-            draw: function () {
-                this.container.empty();
+	    draw: function (container) {
+		container.empty();
 
                 var margin = {top: 50, right: 30, bottom: 10, left: 30},
-                    width = this.container.width() - margin.left - margin.right,
-                    height = 200 - margin.top - margin.bottom;
+		    width = container.width() - margin.left - margin.right,
+		    height = container.height() - margin.top - margin.bottom;
 
                 var x = d3.scale.ordinal()
                     .rangeRoundBands([0, width], .1);
@@ -32,7 +32,7 @@ var barchart = {
                     .range(colorbrewer.RdYlGn[5]);
 
                 // An SVG element with a bottom-right origin.
-                var svg = d3.select(this.container.get(0)).append("svg")
+		var svg = d3.select(container.get(0)).append("svg")
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
                     .append("g")
