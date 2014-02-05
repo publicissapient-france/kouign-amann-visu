@@ -64,6 +64,7 @@ var barchart = {
                     })
                     .attr("width", x.rangeBand())
                     .attr("y", function (d) {
+			if(nbVote == 0) { return 0} else
                         return y(d[1] / nbVote);
                     })
                     .attr("height", function (d) {
