@@ -1,11 +1,12 @@
 var SWITCH_DELAY = 4000;
+var SWITCHER_ENABLED = false;
 
 var PAGES = [
+    "barchart.html?track=Agile",
     "barchart.html?track=Front",
     "barchart.html?track=Divers",
     "barchart.html?track=Craft",
     "barchart.html?track=Data",
-    "barchart.html?track=Agile",
     "topspeaker.html"
 ];
 
@@ -20,6 +21,8 @@ if (getCurrentPageIndex() == -1) {
     window.location.href = 'html/' + PAGES[0];
 }
 
-setTimeout(function () {
-    window.location.href = PAGES[(getCurrentPageIndex() + 1) % PAGES.length];
-}, SWITCH_DELAY);
+if (SWITCHER_ENABLED) {
+    setTimeout(function () {
+        window.location.href = PAGES[(getCurrentPageIndex() + 1) % PAGES.length];
+    }, SWITCH_DELAY);
+}
