@@ -13,8 +13,7 @@ var PAGES = [
 function getCurrentPageIndex() {
     var currentLocation = window.location.toString();
     currentLocation = currentLocation.substring(currentLocation.lastIndexOf('/') + 1);
-    var currentPageIndex = PAGES.indexOf(currentLocation);
-    return currentPageIndex;
+    return PAGES.indexOf(currentLocation);
 }
 
 if (getCurrentPageIndex() == -1) {

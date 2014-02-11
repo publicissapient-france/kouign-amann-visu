@@ -59,16 +59,16 @@
         }
 
         .row {
-            max-width:99em;
+            max-width: 99em;
         }
     </style>
 </head>
 
 <body>
-<div id="notes" class="row">
-    <div class="row">
-        <div id="title" class="large-12 column"></div>
-    </div>
+<div class="row">
+    <div id="title" class="large-12 column"></div>
+</div>
+<div id="notes" class="row"></div>
 </div>
 
 <script>
@@ -77,57 +77,55 @@
     var query = getQueryParams(document.location.search);
     var trackName = query.track;
 
-    Q($.get(baseUrl + 'track/' + trackName)).then(function(entriesData) {
-	var entries = entriesData.result;
+    Q($.get(baseUrl + 'track/' + trackName)).then(function (entriesData) {
+        var entries = entriesData.result;
+        // Update title
+        var title = $('<h1 class="title">' + trackName + '</h1>');
+        $('#title').append(title);
 
-	var requests = entries.map(function(entry) {
-	    return Q($.get(baseUrl + 'aggregate/note/' + entry.id)).then(function(notesData){
-		return { entry: entry, notes: notesData.result };
-	    });
+        var requests = entries.map(function (entry) {
+            return Q($.get(baseUrl + 'aggregate/note/' + entry.id)).then(function (notesData) {
+                return { entry: entry, notes: notesData.result };
+            });
         });
 
-	return Q.all(requests).then(function(entriesAndNotes){
-	    return entriesAndNotes;
-	});
-    }).done(function(entriesAndNotes) {
+        return Q.all(requests).then(function (entriesAndNotes) {
+            return entriesAndNotes;
+        });
+    }).done(function (entriesAndNotes) {
+        var graphs = _.map(entriesAndNotes, function (data) {
+            return {
+                chart: !_.isEmpty(data.notes) ? barchart.init(data.notes) : null,
+                entry: data.entry
+            };
+        });
 
-	var graphs = _.map(entriesAndNotes, function(data) {
-	    console.log(data.notes);
-	    if (!_.isEmpty(data.notes)) {
-		return {
-		    chart : barchart.init(data.notes),
-		    entry: data.entry
-		};
-	    } else {
-		return {
-		    chart : null,
-		    entry: data.entry
-		};
-	    }
-	});
-
-	_.forEach(graphs, function(graph) {
-
-	    var graphDiv = generateContainer(300, graph.entry.title, graph.entry.speaker);
-	    if (graph.chart)
-		graph.chart.draw(graphDiv);
-	});
-
-		// TODO
-//        $(window).on('resize', redraw);
-
+        draw(graphs);
+        $(window).on('resize', function () {
+            draw(graphs);
+        });
     });
 
+    var draw = function (graphs) {
+        $('#notes').empty();
+        _.forEach(graphs, function (graph) {
+            if (graph.chart) {
+                var graphDiv = generateContainer(300, graph.entry.title, graph.entry.speaker);
+                graph.chart.draw(graphDiv);
+            }
+        });
+    };
+
     function generateContainer(height, title, speaker) {
-	var container = $('<div/>').addClass('large-3 columns');
-	var graphDiv = $('<div/>').attr('style', 'height: 300px');
-	var titleDiv = $('<div/>').addClass('graphTitle').text(title);
-	var speakerDiv = $('<div/>').addClass('graphSpeaker').text(speaker);
-	container.append(graphDiv);
-	container.append(titleDiv);
-	container.append(speakerDiv);
-	$('#notes').append(container);
-	return graphDiv;
+        var container = $('<div/>').addClass('large-3 columns');
+        var graphDiv = $('<div/>').css({'height': height + 'px'});
+        var titleDiv = $('<div/>').addClass('graphTitle').text(title);
+        var speakerDiv = $('<div/>').addClass('graphSpeaker').text(speaker);
+        container.append(graphDiv);
+        container.append(titleDiv);
+        container.append(speakerDiv);
+        $('#notes').append(container);
+        return graphDiv;
     }
 
     // util function
