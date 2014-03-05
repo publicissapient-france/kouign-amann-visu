@@ -1,4 +1,4 @@
-var SWITCH_DELAY = 4000;
+var SWITCH_DELAY = 10000;
 
 var PAGES = [
     "barchart.html?track=Front",
