@@ -12,6 +12,13 @@
     <script type="text/javascript" src="../scripts/page-switcher.js"></script>
 
     <style>
+      body {
+      font-family: "Open Sans","Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif;
+      }
+
+      .chartBox {
+/*      background-color: #F8F8F8;*/
+      }
         .axis {
             font: 10px sans-serif;
         }
@@ -19,7 +26,6 @@
         .axis path,
         .axis line {
             fill: none;
-            stroke: #000;
             shape-rendering: crispEdges;
         }
 
@@ -33,24 +39,31 @@
 
         .graphTitle {
             text-align: center;
+      padding: 20px 10px; 
+background-color: #0A8187;
+color: #FECA74;
         }
 
         .graphSpeaker {
             text-align: center;
             font-weight: bold;
+      color: #000;
+      padding: 20px 0; 
+      background-color:#F5AF33;
         }
 
-        .title {
+        #title {
             text-align: center;
+      background-color:#F5AF33;
         }
 
         .mean {
             text-anchor: middle;
             font-size: 3em;
-            fill: white;
-            stroke: black;
-            stroke-width: 2px;
-            font-weight: bold;
+            fill: #0A8187;
+/*            stroke: black;
+            stroke-width: 1px;
+  */          font-weight: bold;
         }
 
         .width50 {
@@ -117,7 +130,7 @@
     };
 
     function generateContainer(height, title, speaker) {
-        var container = $('<div/>').addClass('large-3 columns');
+        var container = $('<div/>').addClass('large-3 columns chartBox');
         var graphDiv = $('<div/>').css({'height': height + 'px'});
         var titleDiv = $('<div/>').addClass('graphTitle').text(title);
         var speakerDiv = $('<div/>').addClass('graphSpeaker').text(speaker);

@@ -72,11 +72,11 @@ var barchart = {
                     })
                     .attr("fill", function (d) {
                         return color(d[0]);
-                    })
-                    //.attr("fill-opacity", 0.8)
-                    .attr("stroke", function (d) {
-                        return "black";
                     });
+                    //.attr("fill-opacity", 0.8)
+//                    .attr("stroke", function (d) {
+  //                      return "black";
+    //                });
 
                 // add test center of graph
                 svg.append("text")
