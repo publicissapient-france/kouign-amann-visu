@@ -5,6 +5,7 @@
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
+    <script src="http://www.promisejs.org/implementations/q/q-0.9.6.js"></script>
     <script src="../scripts/barchart.js"></script>
     <script src="../scripts/colorbrewer.js"></script>
     <link rel="stylesheet" href="http://cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css"/>
@@ -58,72 +59,74 @@
         }
 
         .row {
-            max-width:99em;
+            max-width: 99em;
         }
     </style>
 </head>
 
 <body>
-<div id="notes" class="row">
-    <div class="row">
-        <div id="title" class="large-12 column"></div>
-    </div>
+<div class="row">
+    <div id="title" class="large-12 column"></div>
+</div>
+<div id="notes" class="row"></div>
 </div>
 
 <script>
     var baseUrl = "http://kouign-amann-cloud.devoxxfr-kouign-amann.cloudbees.net/"
-    //var baseUrl = "http://localhost:8080/"
-    var currentGraph = []
 
-    function newNoteHistogramme(container, data, numResults) {
-
-        var colSize = 3;
-        if (numResults < 4) {
-            colSize = 12 / numResults;
-        }
-        // Create new responsive graph and append them to row
-        var ng = $('<div/>').addClass('large-3 columns');
-//        var ng = $('<div/>').addClass('large-' + colSize +' columns');
-//        var ng = $('<div/>').addClass('width50');
-        var graph = $('<div/>');
-        var title = $('<div/>').addClass('graphTitle').text(data.title);
-        var speaker = $('<div/>').addClass('graphSpeaker').text(data.speaker);
-        ng.append(graph);
-        ng.append(title);
-        ng.append(speaker);
-        $('#' + container).append(ng);
-        return barchart.init(graph, data.notes);
-    }
-
-    var average;
     var query = getQueryParams(document.location.search);
-    var trackId = query.track
-    $.get(baseUrl + 'track/' + trackId, function (rawData) {
+    var trackName = query.track;
 
-        console.log(rawData.result.length)
-
+    Q($.get(baseUrl + 'track/' + trackName)).then(function (entriesData) {
+        var entries = entriesData.result;
         // Update title
-        var title = $('<h1 class="title">' + trackId + '</h1>')
-        $('#title').append(title)
-        rawData.result.forEach(function (entry) {
-            // get note and display data
-            $.get(baseUrl + 'aggregate/note/'+entry.id, function (rawData) {
-                entry.notes = rawData.result
-                currentGraph.push(newNoteHistogramme("notes", entry, rawData.result.length))
-                redraw();
-            })
+        var title = $('<h1 class="title">' + trackName + '</h1>');
+        $('#title').append(title);
+
+        var requests = entries.map(function (entry) {
+            return Q($.get(baseUrl + 'aggregate/note/' + entry.id)).then(function (notesData) {
+                return { entry: entry, notes: notesData.result };
+            });
         });
 
+        return Q.all(requests).then(function (entriesAndNotes) {
+            return entriesAndNotes;
+        });
+    }).done(function (entriesAndNotes) {
+        var graphs = _.map(entriesAndNotes, function (data) {
+            return {
+                chart: !_.isEmpty(data.notes) ? barchart.init(data.notes) : null,
+                entry: data.entry
+            };
+        });
+
+        draw(graphs);
+        $(window).on('resize', function () {
+            draw(graphs);
+        });
     });
 
-    function redraw() {
-        currentGraph.forEach(function (entry) {
-            entry.draw()
-        })
+    var draw = function (graphs) {
+        $('#notes').empty();
+        _.forEach(graphs, function (graph) {
+            if (graph.chart) {
+                var graphDiv = generateContainer(300, graph.entry.title, graph.entry.speaker);
+                graph.chart.draw(graphDiv);
+            }
+        });
+    };
+
+    function generateContainer(height, title, speaker) {
+        var container = $('<div/>').addClass('large-3 columns');
+        var graphDiv = $('<div/>').css({'height': height + 'px'});
+        var titleDiv = $('<div/>').addClass('graphTitle').text(title);
+        var speakerDiv = $('<div/>').addClass('graphSpeaker').text(speaker);
+        container.append(graphDiv);
+        container.append(titleDiv);
+        container.append(speakerDiv);
+        $('#notes').append(container);
+        return graphDiv;
     }
-
-    $(window).on('resize', redraw);
-
 
     // util function
 
