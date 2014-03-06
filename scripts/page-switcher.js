@@ -2,11 +2,7 @@ var SWITCH_DELAY = 4000;
 var SWITCHER_ENABLED = false;
 
 var PAGES = [
-    "barchart.html?track=Agile",
-    "barchart.html?track=Front",
     "barchart.html?track=Divers",
-    "barchart.html?track=Craft",
-    "barchart.html?track=Data",
     "topspeaker.html"
 ];
 
