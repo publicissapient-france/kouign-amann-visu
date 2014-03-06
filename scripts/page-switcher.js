@@ -3,6 +3,11 @@ var SWITCHER_ENABLED = false;
 
 var PAGES = [
     "barchart.html?track=Divers",
+    //"barchart.html?track=Front",
+    //"barchart.html?track=Divers",
+    //"barchart.html?track=Craft",
+    //"barchart.html?track=Data",
+    //"barchart.html?track=Agile",
     "topspeaker.html"
 ];
 

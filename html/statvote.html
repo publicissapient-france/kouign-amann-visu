@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="../scripts/barchart.js"></script>
+    <script src="../scripts/colorbrewer.js"></script>
+    <script src="../scripts/animated-text.js"></script>
+    <script src="../scripts/animated-percent.js"></script>
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css"/>
+    <!-- <script type="text/javascript" src="../scripts/page-switcher.js"></script>-->
+
+    <style>
+        .title {
+            text-align: center;
+        }
+
+        .counter {
+            fill: black;
+        }
+
+        text {
+            font-size: 4rem;
+            font-weight: 400;
+            line-height: 18rem;
+            fill: #1072b8;
+        }
+
+        #donut {
+            width: 29rem;
+            height: 29rem;
+            margin: 0 auto;
+        }
+
+        path.color0 {
+            fill: #1072b8;
+        }
+
+        path.color1 {
+            fill: #35526b;
+        }
+
+    </style>
+</head>
+
+<body>
+<div id="top" class="row">
+    <div class="row">
+        <div id="title" class="large-12 column"><h1 class="title">Les votes</h1></div>
+    </div>
+</div>
+<div class="row">
+    <div id="votes" class="large-6 column"></div>
+    <div id="votant" class="large-6 column"></div>
+
+</div>
+<div class="row">
+    <div id="percent" class="large-4 column"></div>
+</div>
+
+
+<script>
+    animatedCounter.init($('#votes'), {min: 0, max: 1000, duration: 3000, prefix: "", suffix: " votes"}).draw();
+    animatedCounter.init($('#votant'), {min: 0, max: 300, duration: 3000, prefix: "", suffix: " devoxxians ont votés"}).draw();
+    animatedPercent.init($('#percent')).draw(50)
+</script>
+</body>
+</html>
