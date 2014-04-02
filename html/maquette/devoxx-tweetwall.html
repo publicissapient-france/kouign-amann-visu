@@ -2,12 +2,6 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
-    <script src="http://www.promisejs.org/implementations/q/q-0.9.6.js"></script>
-    <script src="../../scripts/barchart.js"></script>
-    <script src="../../scripts/colorbrewer.js"></script>
     <link rel="stylesheet" href="http://cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css"/>
 
     <style>
@@ -15,33 +9,12 @@
             font-family: "Open Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
         }
 
-        .chartBox {
-            /*      background-color: #F8F8F8;*/
-        }
-
-        .axis {
-            font: 10px sans-serif;
-        }
-
-        .axis path,
-        .axis line {
-            fill: none;
-            shape-rendering: crispEdges;
-        }
-
-        .x.axis {
-            display: none;
-        }
-
-        .y.axis path {
-            display: none;
-        }
-
         .graphTitle {
             text-align: center;
             padding: 5px 5px;
             background-color: #0A8187;
             color: #FECA74;
+            margin: 0 15px;
         }
 
         .graphSpeaker {
@@ -50,6 +23,7 @@
             color: #000;
             padding: 5px 0;
             background-color: #F5AF33;
+            margin: 0 15px;
         }
 
         .gravatar{
@@ -64,31 +38,15 @@
             background-color: #F5AF33;
         }
 
-        #best-devoxx, #best-half-day {
-            text-align: center;
-        }
-
-        .mean {
-            text-anchor: middle;
-            font-size: 3em;
-            fill: #0A8187;
-            /*            stroke: black;
-                        stroke-width: 1px;
-              */
-            font-weight: bold;
-        }
-
-        .width50 {
-            width: 50%;
-            display: inline-block;
+        .column {
+            padding: 0;
         }
 
         .row {
             max-width: 99em;
-            /*height: 100px;*/
         }
 
-        .logo-container .large-3 {
+        .logo-container {
             text-align: center;
         }
 
@@ -100,88 +58,132 @@
 </head>
 
 <body>
-
-<div class="row logo-container">
-    <div class="large-3 column">
-        <img src="http://www.devoxx.fr/wp-content/uploads/2014/02/devoxx_france_280px.png" alt="devoxx" class='logo'/>
+    <div class="row logo-container">
+        <div class="large-3 column">
+            <img src="http://www.devoxx.fr/wp-content/uploads/2014/02/devoxx_france_280px.png" alt="devoxx" class='logo'/>
+        </div>
+        <div class="large-3 column">
+            <img src="http://idee71.files.wordpress.com/2012/02/logo_xebia.jpg" alt="Xebia" class='logo'/>
+        </div>
+        <div class="large-3 column">
+            <img src="http://blog.xebia.fr/wp-content/uploads/2012/05/cloudbees-logo.png" alt="cloudbees" class='logo'/>
+        </div>
+        <div class="large-3 column">
+            <img src="http://mqtt.org/new/wp-content/uploads/2011/08/mqttorg-glow.png" alt="mqtt" class='logo'/>
+        </div>
     </div>
-    <div class="large-3 column">
-        <img src="http://idee71.files.wordpress.com/2012/02/logo_xebia.jpg" alt="Xebia" class='logo'/>
-    </div>
-    <div class="large-3 column">
-        <img src="http://blog.xebia.fr/wp-content/uploads/2012/05/cloudbees-logo.png" alt="devoxx" class='logo'/>
-    </div>
-    <div class="large-3 column">
-        <img src="http://mqtt.org/new/wp-content/uploads/2011/08/mqttorg-glow.png" alt="devoxx" class='logo'/>
-    </div>
-</div>
-<div class="row">
-    <div class="main-title large-6 column">
-        <h3 class="title">Best Slot of devoxx</h3>
-    </div>
-    <div class="main-title large-6 column">
-        <h3 class="title">Best Slot of half day</h3>
-    </div>
-</div>
-<div class="row">
-    <div id="best-devoxx" class="large-6 column"></div>
-    <div id="best-half-day" class="large-6 column"></div>
-</div>
-<br/>
-<div class="row">
-    <div class="main-title large-3 column"><h3>Alternate languages</h3></div>
-    <div class="main-title large-3 column"><h3>Future&lt;Devoxx&gt;</h3></div>
-    <div class="main-title large-3 column"><h3>Java SE, Java EE</h3></div>
-    <div class="main-title large-3 column"><h3>Agility, DevOps</h3></div>
-</div>
-<div class="row">
-    <div id="best-language" class="large-3 column"></div>
-    <div id="best-future" class="large-3 column"></div>
-    <div id="best-java" class="large-3 column"></div>
-    <div id="best-agility" class="large-3 column"></div>
-</div>
-<br/>
-<div class="row">
-    <div class="main-title large-3 column"><h3>Web, HTML5</h3></div>
-    <div class="main-title large-3 column"><h3>Startups & innovation</h3></div>
-    <div class="main-title large-3 column"><h3>Mobile</h3></div>
-    <div class="main-title large-3 column"><h3>Cloud, Big Data, NoSQL</h3></div>
-</div>
-<div class="row">
-    <div id="best-web" class="large-3 column"></div>
-    <div id="best-startups" class="large-3 column"></div>
-    <div id="best-mobile" class="large-3 column"></div>
-    <div id="best-cloud" class="large-3 column"></div>
-</div>
 
+    <div class="row">
+        <div class="large-6 column">
+            <h3 class="main-title">Best Slot of devoxx</h3>
 
-<script>
-    var speakerName = 'Aurélien Maury';
-    var slotTitle = 'Approche des architectures microservices avec Vert.x';
-    var speakerGravatar = '15706981ae8b52786c1587170bb53da6';
+            <div id="best-devoxx">
+                <img class="gravatar" src="http://www.gravatar.com/avatar/15706981ae8b52786c1587170bb53da6?s=90px">
 
-    function drawBestSlot(id) {
-        var ng = $('<div/>');
-        var gravatar = $('<img class="gravatar"/>').attr('src', 'http://www.gravatar.com/avatar/'+speakerGravatar+'?s=90px');
-        var title = $('<div/>').addClass('graphTitle').text(slotTitle);
-        var speaker = $('<div/>').addClass('graphSpeaker').text(speakerName);
-        ng.append(gravatar);
-        ng.append(title);
-        ng.append(speaker);
-        $('#' + id).append(ng);
-    }
+                <div class="graphTitle">Approche des architectures microservices avec Vert.x</div>
+                <div class="graphSpeaker">Aurélien Maury</div>
+            </div>
+        </div>
+        <div class="large-6 column">
+            <h3 class="main-title">Best Slot of half day</h3>
 
-    drawBestSlot('best-devoxx');
-    drawBestSlot('best-half-day');
-    drawBestSlot('best-language');
-    drawBestSlot('best-future');
-    drawBestSlot('best-java');
-    drawBestSlot('best-agility');
-    drawBestSlot('best-web');
-    drawBestSlot('best-startups');
-    drawBestSlot('best-mobile');
-    drawBestSlot('best-cloud');
-</script>
+            <div id="best-half-day">
+                <img class="gravatar" src="http://www.gravatar.com/avatar/15706981ae8b52786c1587170bb53da6?s=90px">
 
+                <div class="graphTitle">Approche des architectures microservices avec Vert.x</div>
+                <div class="graphSpeaker">Aurélien Maury</div>
+            </div>
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="row">
+        <div class="large-3 column">
+            <h3 class="main-title">Alternate languages</h3>
+
+            <div id="best-language">
+                <img class="gravatar" src="http://www.gravatar.com/avatar/15706981ae8b52786c1587170bb53da6?s=90px">
+
+                <div class="graphTitle">Approche des architectures microservices avec Vert.x</div>
+                <div class="graphSpeaker">Aurélien Maury</div>
+            </div>
+        </div>
+        <div class="large-3 column">
+            <h3 class="main-title">Future&lt;Devoxx&gt;</h3>
+
+            <div id="best-future">
+                <img class="gravatar" src="http://www.gravatar.com/avatar/15706981ae8b52786c1587170bb53da6?s=90px">
+
+                <div class="graphTitle">Approche des architectures microservices avec Vert.x</div>
+                <div class="graphSpeaker">Aurélien Maury</div>
+            </div>
+        </div>
+        <div class="large-3 column">
+            <h3 class="main-title">Java SE, Java EE</h3>
+
+            <div id="best-java">
+                <img class="gravatar" src="http://www.gravatar.com/avatar/15706981ae8b52786c1587170bb53da6?s=90px">
+
+                <div class="graphTitle">Approche des architectures microservices avec Vert.x</div>
+                <div class="graphSpeaker">Aurélien Maury</div>
+            </div>
+        </div>
+        <div class="large-3 column">
+            <h3 class="main-title">Agility, DevOps</h3>
+
+            <div id="best-agility">
+                <img class="gravatar" src="http://www.gravatar.com/avatar/15706981ae8b52786c1587170bb53da6?s=90px">
+
+                <div class="graphTitle">Approche des architectures microservices avec Vert.x</div>
+                <div class="graphSpeaker">Aurélien Maury</div>
+            </div>
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="row">
+        <div class="large-3 column">
+            <h3 class="main-title">Web, HTML5</h3>
+
+            <div id="best-web">
+                <img class="gravatar" src="http://www.gravatar.com/avatar/15706981ae8b52786c1587170bb53da6?s=90px">
+
+                <div class="graphTitle">Approche des architectures microservices avec Vert.x</div>
+                <div class="graphSpeaker">Aurélien Maury</div>
+            </div>
+        </div>
+        <div class="large-3 column">
+            <h3 class="main-title">Startups & innovation</h3>
+
+            <div id="best-startups">
+                <img class="gravatar" src="http://www.gravatar.com/avatar/15706981ae8b52786c1587170bb53da6?s=90px">
+
+                <div class="graphTitle">Approche des architectures microservices avec Vert.x</div>
+                <div class="graphSpeaker">Aurélien Maury</div>
+            </div>
+        </div>
+        <div class="large-3 column">
+            <h3 class="main-title">Mobile</h3>
+
+            <div id="best-mobile">
+                <img class="gravatar" src="http://www.gravatar.com/avatar/15706981ae8b52786c1587170bb53da6?s=90px">
+
+                <div class="graphTitle">Approche des architectures microservices avec Vert.x</div>
+                <div class="graphSpeaker">Aurélien Maury</div>
+            </div>
+        </div>
+        <div class="large-3 column">
+            <h3 class="main-title">Cloud, Big Data, NoSQL</h3>
+
+            <div id="best-cloud">
+                <img class="gravatar" src="http://www.gravatar.com/avatar/15706981ae8b52786c1587170bb53da6?s=90px">
+
+                <div class="graphTitle">Approche des architectures microservices avec Vert.x</div>
+                <div class="graphSpeaker">Aurélien Maury</div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
